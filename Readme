@@ -200,3 +200,26 @@ authentication= > username/password
 enter username and password you choose while creating cluster
 set fav name 
 and click connect 
+
+************************Deployment**************************
+//pushing project on github
+git init
+git status
+git add . 
+git commit -m "first commit"
+git push origin master
+
+//pushing project on heroku
+heroku create name-of-project
+heroku config:set key=value //to set env variables
+
+heroku config //to view env variables
+
+heroku config:unset key  //to unset env variables 
+
+mongodb atlas connection string from  coneect from application 
+MONGODB_URL="mongodb+srv://project:project123@cluster0-qedl3.mongodb.net/project?retryWrites=true&w=majority"
+
+
+project url
+https://uzair-nodejs-project.herokuapp.com/
