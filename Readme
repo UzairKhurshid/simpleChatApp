@@ -1,0 +1,202 @@
+//this is a Node Js project made using offical docs of node js and you can use this project to create another project.
+//step by step guide 
+
+
+1:********************************************************************************************************************
+
+create a directory structure:
+    create following folders.
+        Public => css , images , js 
+        server => middleware , db , models , routes , app.js 
+        views => user , admin , shared.
+        .gitignore => write name of the file you dont want to push on github repositery.
+
+
+
+2 **********************************************************************************************************************
+
+write click in your project directory and select open in terminal .
+    in terminal write:
+        =>npm init    =>hit enter for all question . it will create pacakage.json file in your directory which hilds all of your project depandancies.
+        
+        =>Edit pacakage.json file add this in scripts . this is your stating point of project 
+        "start": "node server/app.js" 
+
+
+3 ***********************************************************************************************************************
+
+=>in terminal install npm express by writing 
+    npm i express@4.17.1
+    2 new files will be created node_modules and pacakage-lock.json in your project.
+
+=>In App.js file 
+
+    require('../server/db/mongoose')
+    const express=require('express')
+    const app=express()
+    const port=process.env.port || 3000;
+    app.get('/',(req,res)=>{
+        res.send('hello world');
+    })
+    app.listen(port,()=>{
+        console.log('listning on port '+port)
+    })
+
+    to run app.js
+        npm start. 
+
+
+4 ***********************************************************************************************************************
+
+for database we are using mongoose framework 
+to install it in terminal 
+    npm i mongoose@5.9.4
+    in db folder create mongoose.js file and connect to db
+
+    const mongoose = require('mongoose')
+    mongoose.connect('mongodb://localhost/demoDB', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+    });
+
+    this will connect you to your database
+
+    require('../server/db/mongoose')
+    write this line in app.js so your database connects automatically.
+
+5 ***********************************************************************************************************************
+
+creatin a model using mongoose
+in models create a new file user.js
+in user.js
+
+    const mongoose=require('mongoose')
+    const userSchema =new  mongoose.Schema({
+        name:{
+            type:String,
+            trim: true,
+            required:true
+        },
+        regNo:{
+            type:Number,
+            trim: true,
+            required:true,
+            unique:true
+        },
+        gender:{
+            type:String,
+            trim: true,
+            required:true
+        }
+    });
+    const User=mongoose.model('User',userSchema)
+    module.exports=User
+
+
+
+6 ***********************************************************************************************************************
+
+we define all routes of our application in seperate file named as routes/user.js
+
+        const express=require('express')
+        const router=new express.Router()
+
+
+        router.get('/userIndex',(req,res)=>{
+            res.render('user/index',{
+                title:'User Dashboard'
+            })
+        })
+
+
+
+        module.exports=router
+
+
+
+
+7 ***********************************************************************************************************************
+
+install npm i body-parser@1.19.0
+so you can read your requests.
+after this add this in app.js 
+    
+    const bodyParser=require('body-parser')
+    app.use(express.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
+
+
+
+
+    *******************************************************************************************************************
+
+    To setup views and view directories etc we are using hbs templating engine.
+    
+    const path = require('path')
+    const hbs = require('hbs')
+
+    const publicDirectory = path.join(__dirname, '../public')
+    const viewsDirectory = path.join(__dirname, '../views')
+    const partialsDirectory = path.join(__dirname, '../views/shared')
+
+    app.set('views', viewsDirectory)
+    app.set('view options', { layout: '../views/layouts/main' });
+    app.set('view engine','hbs')
+
+    hbs.registerPartials(partialsDirectory)
+    app.use(express.static(publicDirectory))
+
+*************************************************************************
+
+Envoirmental Variables
+npm i env-cmd@8.0.2 --save-dev
+this modules is used to for setting up Envoirmental Variables
+and only this version is working for us
+
+
+
+
+
+************************************Deployment**************************************
+
+for deployment first go to mongodb atlas
+ signup for free
+ select aws cloud provider
+ select primary region
+ and leave everything as per default
+
+ click create cluster
+ wait untill your cluster is created
+
+ click connect 
+ choose diff ip 
+ ip address=0.0.0.0/0   then click add ip address
+
+
+ then create db user 
+ enter username and password
+ click create mongodb user
+
+
+ click choose a connection method
+ click connect with mongodb compass 
+ download mongodb compass if you dont have and set it up for both local and atlas database
+
+
+ in mongodb compass 
+ hostname=localhost
+ port=27017
+ favourite name = localhost mongodb database
+create favourite
+
+this is all for database connection locally
+now create a new connection for cloud database
+
+create new connection
+in hostname copy the connection string you get while creating cluster and copy after password@ to the .net
+paste it in hostname
+click svr record
+authentication= > username/password
+enter username and password you choose while creating cluster
+set fav name 
+and click connect 

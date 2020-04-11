@@ -1,0 +1,44 @@
+<html>
+{{>header}}
+<body>
+
+    <h1>Welcome to Dashboard</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task Name</th>
+                        <th>Task Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#if tasks}}
+                        {{#each tasks}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.description}}</td>
+                            </tr>
+                        {{/each}}
+                    {{/if}}
+                </tbody>
+            </table>
+        </div><br><br><br><br><br><br>
+            <div class="col-md-6">
+                <form action="/" method="POST">
+                    <label>Task Name</label>
+                    <input type="text" name="name">
+                    <br>
+                    <label>Task Description</label>
+                    <input type="text" name="description">
+                    <br>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+{{>footer}}
+</body>
+</html>
