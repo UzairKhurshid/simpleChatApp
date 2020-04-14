@@ -1,11 +1,35 @@
 require('../server/db/mongoose')
 const express = require('express')
+const http = require('http')
+const socketio = require('socket.io')
 const path = require('path')
 const hbs = require('hbs')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const mongoStoreSession = require('connect-mongodb-session')(session)
 const app = express()
+const server = http.createServer(app)
+const io = socketio(server)
+const { generateMessage } = require('./utils/messages')
+
+
+io.on('connection', (socket) => {
+    console.log('new websocket connection ')
+
+    socket.emit('message', generateMessage('welcome '))
+    socket.broadcast.emit('message', generateMessage('A new User jas joined'))
+    socket.on('sendMessage', (message, callback) => {
+        io.emit('message', generateMessage(message))
+        callback()
+    })
+    socket.on('disconnect', () => {
+        io.emit('message', generateMessage('A user has left!'))
+    })
+})
+
+
+
+
 
 const dbStore = new mongoStoreSession({
     uri: process.env.MONGODB_URL,
@@ -18,7 +42,9 @@ app.use(session({
     store: dbStore
 }))
 
-//routes
+
+
+// requiring routes
 const authRoute = require('../server/routes/auth')
 const dashboardRoute = require('../server/routes/dashboard')
 
@@ -34,12 +60,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'hbs')
 app.set('views', viewDirectory)
 hbs.registerPartials(partialsDirectory)
+app.use(express.static(publicDirectory))
 
 
+// Using routes
 app.use(authRoute)
 app.use(dashboardRoute)
 
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log('listning on port ' + port)
 })
