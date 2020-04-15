@@ -30,7 +30,7 @@ router.post('/login', async(req, res) => {
             res.redirect('/login')
         }
         req.session.email = email
-        res.redirect('/dashboard')
+        res.redirect('/')
     } catch (e) {
         console.log(e.message)
     }

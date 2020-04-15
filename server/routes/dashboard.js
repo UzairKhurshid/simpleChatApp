@@ -3,25 +3,16 @@ const auth = require('../middleware/auth')
 const path = require('path')
 const router = new express.Router()
 
-router.get('/dashboard', auth, async(req, res) => {
-    try {
-        console.log('dashboard')
-        res.render('dashboard', {
-            title: 'chat App',
-            name: 'My First Chat Application'
-        });
-    } catch (e) {
-        console.log(e.message)
-        res.redirect('/dashboard')
-    }
-})
 
-router.get('/chat', auth, async(req, res) => {
+
+router.get('/', auth, async(req, res) => {
     try {
-        res.sendFile(path.join(__dirname, '../../public') + '/index.html');
+        res.render('chat/chat', {
+            title: 'chat room'
+        })
     } catch (e) {
         console.log(e.message)
-        res.redirect('/dashboard')
+        res.redirect('/')
     }
 })
 
