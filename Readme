@@ -148,6 +148,34 @@ after this add this in app.js
 
 *************************************************************************
 
+Sending Emails:
+npm i --save nodemailer nodemailer-sendgrid-transport
+
+in file from you want to send 
+//***************************** */
+
+const nodemailer = require('nodemailer')
+const sendgridTransport = require('nodemailer-sendgrid-transport')
+    
+const transporter = nodemailer.createTransport(sendgridTransport({
+        auth: {
+            api_key: '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'
+        }
+    }))
+
+
+in route  from where you want to send message
+ //********************************* */
+        transporter.sendMail({
+                to: req.body.email,
+                from: 'sardar.uzair12@gmail.com',
+                subject: 'Signup Successfull',
+                html: '<h1>chatApp successfully created you account</h1>'
+            })
+//********************************* */
+
+*************************************************************************
+
 Envoirmental Variables
 npm i env-cmd@8.0.2 --save-dev
 this modules is used to for setting up Envoirmental Variables

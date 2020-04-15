@@ -11,24 +11,7 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 const { generateMessage } = require('./utils/messages')
-
-
-io.on('connection', (socket) => {
-    console.log('new websocket connection ')
-
-    socket.emit('message', generateMessage('welcome '))
-    socket.broadcast.emit('message', generateMessage('A new User jas joined'))
-    socket.on('sendMessage', (message, callback) => {
-        io.emit('message', generateMessage(message))
-        callback()
-    })
-    socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left!'))
-    })
-})
-
-
-
+const Inbox = require('./models/inbox')
 
 
 const dbStore = new mongoStoreSession({
@@ -67,6 +50,21 @@ app.use(express.static(publicDirectory))
 app.use(authRoute)
 app.use(dashboardRoute)
 
+io.on('connection', (socket) => {
+    console.log('new websocket connection ')
+    let inbox = new Inbox()
+    socket.emit('message', generateMessage('welcome '))
+    socket.broadcast.emit('message', generateMessage('A new User jas joined'))
+    socket.on('sendMessage', (message, callback) => {
+        io.emit('message', generateMessage(message))
+        inbox.msg = message
+        inbox.save()
+        callback()
+    })
+    socket.on('disconnect', () => {
+        io.emit('message', generateMessage('A user has left!'))
+    })
+})
 
 server.listen(port, () => {
     console.log('listning on port ' + port)
